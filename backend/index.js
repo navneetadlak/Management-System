@@ -23,6 +23,9 @@ app.use((err, req, res, next) => {
     res.status(500).json({ message: 'Server Error' });
   });
 
+  const taskRoutes = require('./routes/taskRoutes');
+  const userRoutes = require('./routes/authRoutes');
+
 // starting the server
 const PORT = 8000;
 app.listen(PORT, ()=>{

@@ -11,24 +11,36 @@ const TaskForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch('/api/tasks', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
 
-      if (response.ok) {
-        setMessage('Task created successfully!');
-        setFormData({ title: '', description: '', dueDate: '', priority: 'low' }); // Clear form
-      } else {
-        const errorData = await response.json();
-        setMessage(`Error: ${errorData.message}`);
-      }
-    } catch (error) {
-      setMessage('Something went wrong. Please try again.');
+    const token = localStorage.getItem('token'); // Fetch token
+
+    if (!token) {
+        setMessage('User is not authenticated. Please log in.');
+        return;
     }
-  };
+
+    try {
+        const response = await fetch('/api/tasks', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`, // Use the token
+            },
+            body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+            setMessage('Task created successfully!');
+            setFormData({ title: '', description: '', dueDate: '', priority: 'low' }); // Clear form
+        } else {
+            const errorData = await response.json();
+            setMessage(`Error: ${errorData.message}`);
+        }
+    } catch (error) {
+        setMessage('Something went wrong. Please try again.');
+    }
+};
+
 
   return (
     <div style={{ padding: '1rem', fontFamily: 'Arial, sans-serif' }}>
